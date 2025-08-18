@@ -1,0 +1,14 @@
+{
+  "name": "sehatplus-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "cd frontend && npm run start",
+    "build": "cd frontend && npm install && npm run build",
+    "preview": "cd frontend && npm run preview"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
