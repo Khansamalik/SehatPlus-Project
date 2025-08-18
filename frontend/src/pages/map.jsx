@@ -138,7 +138,7 @@ function ModernControls({
           
           {showBasemaps && (
             <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[180px]">
-              {Object.entries(basemaps).map(([key, basemap]) => (
+              {basemaps && Object.entries(basemaps).map(([key, basemap]) => (
                 <button
                   key={key}
                   onClick={() => {
@@ -498,7 +498,7 @@ export default function MapView() {
         )}
 
         {/* Render markers from GeoJSON */}
-        {geoData?.features.map((feature, idx) => {
+        {geoData?.features && Array.isArray(geoData.features) && geoData.features.map((feature, idx) => {
           const [lng, lat] = feature.geometry.coordinates;
           const hospitalData = {
             name: feature.properties?.name || 'Healthcare Facility',

@@ -109,6 +109,7 @@ export function EmergencyDataProvider({ children }) {
   const updateContact = async (id, payload) => {
     const updated = await apiUpdateContact(id, payload);
     setContacts((prev) => {
+      if (!Array.isArray(prev)) return prev;
       const next = prev.map(c => (c._id === id || c.id === id) ? updated : c);
       persistCache({ contacts: next, services, patientInfo });
       return next;

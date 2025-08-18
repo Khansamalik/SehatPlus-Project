@@ -181,7 +181,7 @@ export default function UploadReport() {
                           <div>
                             <span className="text-sm font-medium text-gray-600">Emergency Contacts:</span>
                             <div className="mt-1">
-                              {emergencyData.contacts.map((contact, index) => (
+                              {Array.isArray(emergencyData.contacts) && emergencyData.contacts.map((contact, index) => (
                                 <p key={index} className="text-gray-800 text-sm">
                                   {contact.name} - {contact.number}
                                 </p>
@@ -254,7 +254,7 @@ export default function UploadReport() {
 
       {/* Uploaded Files List */}
       <div className="w-full max-w-md space-y-3 mb-8">
-        {uploadedFiles.map((file, index) => (
+        {Array.isArray(uploadedFiles) && uploadedFiles.map((file, index) => (
           <div
             key={index}
             className="flex items-center justify-between bg-white/90 border border-[#f1e0e0] rounded-xl px-3 py-2 shadow-sm hover:shadow-md transition-all"
@@ -286,7 +286,7 @@ export default function UploadReport() {
               <p className="text-sm text-gray-400">Upload your first medical report to get started</p>
             </div>
           ) : (
-            previousRecords.map((record, index) => (
+            Array.isArray(previousRecords) && previousRecords.map((record, index) => (
               <div
                 key={index}
                 className="bg-white/70 backdrop-blur-lg border border-[#EADCDC] rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300 p-4 flex flex-col justify-between"
