@@ -1,9 +1,8 @@
 // frontend/src/api/http.js
 import axios from 'axios';
+import { API_BASE_URL } from './config';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-const http = axios.create({ baseURL: API_URL });
+const http = axios.create({ baseURL: API_BASE_URL });
 
 // Attach token on every request
 http.interceptors.request.use((config) => {
@@ -19,13 +18,15 @@ http.interceptors.request.use((config) => {
 // Handle auth failures globally
 http.interceptors.response.use(
   (res) => {
-    console.log(`✅ API Success: ${res.config.method.toUpperCase()} ${res.config.url}`, res.status);
+  const fullUrl = `${API_BASE_URL}${res.config.url}`;
+  console.log(`✅ API Success: ${res.config.method.toUpperCase()} ${fullUrl}`, res.status);
     return res;
   },
   (error) => {
     const status = error?.response?.status;
     const msg = error?.response?.data?.message;
-    console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
+  const fullUrl = error.config ? `${API_BASE_URL}${error.config.url}` : '(no config)';
+  console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${fullUrl}`, {
       status,
       message: msg,
       error

@@ -1,14 +1,13 @@
 // frontend/src/api/emergency.js
 
 import http from './http';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from './config';
 
 // ==================== EMERGENCY CONTACTS ====================
 
 export const fetchContacts = async () => {
   try {
-    console.log(`Fetching contacts from ${API_URL}/emergency/contacts`);
+  console.log(`Fetching contacts from ${API_BASE_URL}/emergency/contacts`);
     const response = await http.get('/emergency/contacts');
     console.log('Contacts fetched successfully:', response.data);
     return response.data;
@@ -117,7 +116,7 @@ export const updatePatientInfo = async (patientData) => {
 
 export const fetchAllEmergencyData = async () => {
   try {
-    console.log(`Fetching all emergency data from ${API_URL}/emergency/all`);
+  console.log(`Fetching all emergency data from ${API_BASE_URL}/emergency/all`);
     const response = await http.get('/emergency/all');
     console.log('All emergency data fetched successfully:', response.data);
     return response.data;

@@ -1,11 +1,10 @@
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL, buildAssetUrl } from './config';
 
 const createAuthInstance = () => {
   const token = localStorage.getItem('token');
   return axios.create({
-    baseURL: API_URL,
+    baseURL: API_BASE_URL,
     headers: {
       'Authorization': token ? `Bearer ${token}` : '',
     },
@@ -14,7 +13,7 @@ const createAuthInstance = () => {
 
 export const uploadReport = async (file, { description = '', tags = [] } = {}) => {
   try {
-    console.log('Uploading to API URL:', API_URL);
+  console.log('Uploading to API URL:', API_BASE_URL);
     const api = createAuthInstance();
     const form = new FormData();
     form.append('file', file);
@@ -34,7 +33,10 @@ export const uploadReport = async (file, { description = '', tags = [] } = {}) =
 export const listReports = async () => {
   const api = createAuthInstance();
   const res = await api.get('/reports');
-  return res.data;
+  return res.data.map(r => ({
+    ...r,
+    absoluteFileUrl: r.fileUrl ? buildAssetUrl(r.fileUrl) : null
+  }));
 };
 
 export const updateReport = async (id, data) => {

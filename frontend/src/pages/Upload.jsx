@@ -89,17 +89,14 @@ export default function UploadReport() {
   };
 
   const handleDownload = (record) => {
-    // If record has a fileUrl from the server, use it; else fallback local object
-    if (record.fileUrl) {
+    const { fileUrl, absoluteFileUrl } = record;
+    if (absoluteFileUrl || fileUrl) {
       const link = document.createElement('a');
-      const backendOrigin = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      // Remove any duplicate slashes when joining URLs
-      const fileUrl = record.fileUrl.startsWith('http') 
-        ? record.fileUrl 
-        : `${backendOrigin}${record.fileUrl.startsWith('/') ? record.fileUrl : `/${record.fileUrl}`}`;
-      
-      console.log('Downloading from URL:', fileUrl);
-      link.href = fileUrl;
+      const rawBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+      const origin = rawBase.replace(/\/api$/i, '');
+      const finalUrl = absoluteFileUrl || (fileUrl.startsWith('http') ? fileUrl : `${origin}${fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl}`);
+      console.log('Downloading from URL:', finalUrl);
+      link.href = finalUrl;
       link.download = record.originalName || record.name || 'report';
       document.body.appendChild(link);
       link.click();
@@ -110,7 +107,7 @@ export default function UploadReport() {
       const url = URL.createObjectURL(record.file);
       const link = document.createElement('a');
       link.href = url;
-      link.download = record.name;
+      link.download = record.name || 'report';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

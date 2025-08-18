@@ -24,17 +24,25 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*', // TODO: restrict to frontend domain in production
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization']
+}));
 app.use(express.json());
+app.options('*', cors());
 
 // uploaded files statically serve krega
 const uploadsPath = path.resolve('uploads');
 console.log('Serving uploads from:', uploadsPath);
 app.use('/uploads', express.static(uploadsPath));
 
-// Test route
+// Health/test routes
 app.get('/', (req, res) => {
-  res.send('🚀 Backend is working!');
+  res.send('🚀 Backend root OK');
+});
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
 // MongoDB Connection
