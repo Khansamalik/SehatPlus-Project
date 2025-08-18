@@ -399,7 +399,7 @@ export default function EmergencyContacts() {
                   <p className="text-gray-500">No emergency contacts added yet</p>
                 </div>
               ) : (
-                contacts.map((contact) => (
+                Array.isArray(contacts) && contacts.map((contact) => (
                   <div key={contact._id || contact.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
                     <div>
                       <h3 className="font-medium text-gray-800">{contact.name}</h3>
@@ -477,7 +477,7 @@ export default function EmergencyContacts() {
                   <p className="text-gray-500">No preferred services saved yet</p>
                 </div>
               ) : (
-                savedServices.map((service) => (
+                Array.isArray(savedServices) && savedServices.map((service) => (
                   <div key={service._id || service.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {service.hospital && (
@@ -694,7 +694,7 @@ export default function EmergencyContacts() {
                     <p className="text-gray-500">No emergency contacts added</p>
                   ) : (
                     <div className="space-y-2">
-                      {contacts.map((contact) => (
+                      {Array.isArray(contacts) && contacts.map((contact) => (
                         <div key={contact._id || contact.id} className="flex justify-between items-center p-3 bg-white rounded-lg">
                           <div>
                             <p className="font-medium text-gray-800">{contact.name}</p>
@@ -713,7 +713,7 @@ export default function EmergencyContacts() {
                     <p className="text-gray-500">No preferred services saved</p>
                   ) : (
                     <div className="space-y-2">
-                      {savedServices.map((service) => (
+                      {Array.isArray(savedServices) && savedServices.map((service) => (
                         <div key={service._id || service.id} className="p-3 bg-white rounded-lg">
                           {service.hospital && (
                             <div className="mb-2">

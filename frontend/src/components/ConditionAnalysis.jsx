@@ -66,7 +66,7 @@ const ConditionAnalysis = ({ analysis }) => {
               <p className="text-gray-700 font-medium ml-2">Detected Symptoms</p>
             </div>
             <div className="flex flex-wrap gap-1">
-              {analysis.symptoms.map((symptom, index) => (
+              {Array.isArray(analysis.symptoms) && analysis.symptoms.map((symptom, index) => (
                 <span 
                   key={index}
                   className="bg-[#fff0f0] text-[#8B0000] px-2 py-1 rounded-full text-xs"
@@ -84,7 +84,7 @@ const ConditionAnalysis = ({ analysis }) => {
         <div className="border-t border-gray-200 pt-3 mt-2">
           <p className="text-sm font-medium text-gray-700 mb-2">Alternative Possibilities:</p>
           <div className="flex flex-wrap gap-2">
-            {analysis.alternativeConditions.map((condition, index) => (
+            {Array.isArray(analysis.alternativeConditions) && analysis.alternativeConditions.map((condition, index) => (
               <div key={index} className="bg-gray-50 px-3 py-1 rounded-full text-sm flex items-center">
                 <span className="font-medium text-gray-700 mr-1">{condition.name}</span>
                 <span className="text-xs text-gray-500">({condition.score}/10)</span>
@@ -98,7 +98,7 @@ const ConditionAnalysis = ({ analysis }) => {
       <div className="border-t border-gray-200 pt-3 mt-3">
         <p className="text-sm font-medium text-gray-700 mb-2">Recommended Specialists:</p>
         <div className="flex flex-wrap gap-1">
-          {analysis.requiredSpecialists.map((specialist, index) => (
+          {Array.isArray(analysis.requiredSpecialists) && analysis.requiredSpecialists.map((specialist, index) => (
             <span 
               key={index}
               className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs"

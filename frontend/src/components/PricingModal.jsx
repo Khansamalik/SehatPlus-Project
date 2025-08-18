@@ -126,7 +126,7 @@ const PricingModal = ({ isOpen, onClose, onUpgrade, initialPlan = null }) => {
               <div>
                 <h3 className="text-lg font-semibold text-[#6C0B14] mb-3">Select Payment Method</h3>
                 <div className="grid md:grid-cols-2 gap-4">
-                  {paymentMethods.map((method) => (
+                  {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
                     <button
                       key={method.name}
                       onClick={() => setSelectedPayment(method.name)}
@@ -155,7 +155,7 @@ const PricingModal = ({ isOpen, onClose, onUpgrade, initialPlan = null }) => {
               <div className="border-t pt-6">
                 <h3 className="text-base font-semibold text-center text-[#6C0B14] mb-4">We Accept</h3>
                 <div className="flex flex-wrap justify-center gap-4">
-                  {paymentMethods.map((method) => (
+                  {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
                     <div key={method.name} className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md">
                       {method.icon}
                       <span className="text-sm">{method.name}</span>

@@ -29,9 +29,11 @@ const MapView = ({ hospitals, userLocation }) => {
   
   // Update markers when hospitals or user location changes
   useEffect(() => {
-    if (mapLoaded && map && hospitals && hospitals.length > 0) {
+    if (mapLoaded && map && Array.isArray(hospitals) && hospitals.length > 0) {
       // Clear existing markers
-      markers.forEach(marker => marker.setMap(null));
+      if (Array.isArray(markers)) {
+        markers.forEach(marker => marker.setMap(null));
+      }
       
       // Create new markers for each hospital
       const newMarkers = hospitals.map((hospital, index) => {

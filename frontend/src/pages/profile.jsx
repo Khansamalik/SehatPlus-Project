@@ -460,7 +460,7 @@ function PaymentMethodsModal({ open, onClose }) {
           <button className="text-gray-500 hover:text-gray-700" onClick={onClose}>✕</button>
         </div>
         <div className="p-6 space-y-3">
-          {items.map(i => (
+          {Array.isArray(items) && items.map(i => (
             <div key={i.name} className="flex items-center gap-3 p-3 border rounded-lg">
               <span className="text-xl">{i.icon}</span>
               <span className="font-medium">{i.name}</span>

@@ -185,7 +185,7 @@ export default function PremiumPatient() {
         </h2>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
+          {Array.isArray(features) && features.map((feature, index) => (
             <div 
               key={index} 
               className="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition duration-300"
@@ -327,7 +327,7 @@ export default function PremiumPatient() {
           We Accept
         </h2>
         <div className="flex flex-wrap justify-center gap-6">
-          {paymentMethods.map((method, index) => (
+          {Array.isArray(paymentMethods) && paymentMethods.map((method, index) => (
             <div 
               key={index} 
               className="flex flex-col items-center bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition min-w-[150px]"
