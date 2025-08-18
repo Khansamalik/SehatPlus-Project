@@ -13,13 +13,22 @@ const createAuthInstance = () => {
 };
 
 export const uploadReport = async (file, { description = '', tags = [] } = {}) => {
-  const api = createAuthInstance();
-  const form = new FormData();
-  form.append('file', file);
-  if (description) form.append('description', description);
-  if (tags && tags.length) form.append('tags', tags.join(','));
-  const res = await api.post('/reports', form, { headers: { 'Content-Type': 'multipart/form-data' } });
-  return res.data;
+  try {
+    console.log('Uploading to API URL:', API_URL);
+    const api = createAuthInstance();
+    const form = new FormData();
+    form.append('file', file);
+    if (description) form.append('description', description);
+    if (tags && tags.length) form.append('tags', tags.join(','));
+    const res = await api.post('/reports', form, { 
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 30000 // 30 second timeout for large files
+    });
+    return res.data;
+  } catch (error) {
+    console.error('API Upload Error:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || error.message || 'Upload failed');
+  }
 };
 
 export const listReports = async () => {

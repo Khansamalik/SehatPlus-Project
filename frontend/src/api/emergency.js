@@ -2,14 +2,18 @@
 
 import http from './http';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 // ==================== EMERGENCY CONTACTS ====================
 
 export const fetchContacts = async () => {
   try {
-  const response = await http.get('/emergency/contacts');
+    console.log(`Fetching contacts from ${API_URL}/emergency/contacts`);
+    const response = await http.get('/emergency/contacts');
+    console.log('Contacts fetched successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error fetching contacts:', error);
+    console.error('Error fetching contacts:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -113,10 +117,22 @@ export const updatePatientInfo = async (patientData) => {
 
 export const fetchAllEmergencyData = async () => {
   try {
-  const response = await http.get('/emergency/all');
+    console.log(`Fetching all emergency data from ${API_URL}/emergency/all`);
+    const response = await http.get('/emergency/all');
+    console.log('All emergency data fetched successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error fetching all emergency data:', error);
+    console.error('Error fetching all emergency data:', error.response?.data || error.message);
+    // If backend isn't available, return a structured empty response
+    // so the UI doesn't crash when trying to map over undefined
+    if (error.message.includes('Network Error') || !error.response) {
+      return {
+        contacts: [],
+        services: [],
+        patientInfo: {},
+        timestamp: new Date().toISOString()
+      };
+    }
     throw error;
   }
 };

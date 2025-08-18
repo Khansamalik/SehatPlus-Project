@@ -64,6 +64,23 @@ export default function EmergencyContacts() {
       refresh();
     }
   }, [isAuthenticated]);
+  
+  // Update local state when context data changes
+  useEffect(() => {
+    setContactsLocal(contacts);
+  }, [contacts]);
+  
+  useEffect(() => {
+    if (patientInfo) {
+      setPatientInfoLocal({
+        name: patientInfo?.name || "",
+        bloodGroup: patientInfo?.bloodGroup || "",
+        medicalHistory: patientInfo?.medicalHistory || "",
+        preferredHospital: patientInfo?.preferredHospital || "",
+        additionalComments: patientInfo?.additionalComments || ""
+      });
+    }
+  }, [patientInfo]);
 
   // Function to load all emergency data
   const loadAllData = async () => {
@@ -119,9 +136,7 @@ export default function EmergencyContacts() {
         
         console.log('API returned updated contact:', updatedContact);
         
-        // Local UI state
-        const updatedContacts = contacts.map(contact => (contact._id === editingId || contact.id === editingId) ? updatedContact : contact);
-        setContactsLocal(updatedContacts);
+        // The context will handle the state update
         
         toast.success('Contact updated successfully!');
       } else {
@@ -134,8 +149,7 @@ export default function EmergencyContacts() {
         
         console.log('API returned new contact:', newContactData);
         
-        const updatedContacts = [...contacts, newContactData];
-        setContactsLocal(updatedContacts);
+        // The context will handle the state update
         
         toast.success('Contact added successfully!');
       }
@@ -162,8 +176,9 @@ export default function EmergencyContacts() {
     setLoading(true);
     try {
       await ctxDeleteContact(id);
-      const updatedContacts = contacts.filter(contact => (contact._id || contact.id) !== id);
-      setContactsLocal(updatedContacts);
+      
+      // No need to manually update contactsLocal, it will be updated via the useEffect
+      // when the context's contacts value changes
       
       // Reset form if deleting the contact being edited
       if (editingId === id) {
@@ -197,9 +212,8 @@ export default function EmergencyContacts() {
       
       console.log('API returned new service:', newServiceData);
       
-      // Update local state
-  // Context already updated; nothing else needed
-      console.log('Updated services state:', updatedServices);
+      // Update local state - context is already updated by the addService function
+      console.log('Service added successfully');
       
       // Reset form
       setPreferredServices({ hospital: "", ambulance: "" });
@@ -208,8 +222,7 @@ export default function EmergencyContacts() {
       // Hide success indicator after 3 seconds
       setTimeout(() => setServiceSaved(false), 3000);
       
-      // Also update localStorage as a backup
-      localStorage.setItem('preferredServices', JSON.stringify(updatedServices));
+      // Context now handles localStorage updates automatically
       
       toast.success('Service preferences saved successfully!');
     } catch (err) {

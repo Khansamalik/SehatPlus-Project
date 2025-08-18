@@ -40,21 +40,34 @@ export default function UploadReport() {
   const handleFileUpload = async (event) => {
     const files = Array.from(event.target.files);
     const uploaded = [];
-    for (const file of files) {
-      try {
-        const saved = await apiUploadReport(file);
-        uploaded.push(saved);
-      } catch (e) {
-        console.error('Upload failed for', file.name, e);
+    
+    try {
+      for (const file of files) {
+        try {
+          console.log('Uploading file:', file.name);
+          const saved = await apiUploadReport(file);
+          console.log('Upload successful:', saved);
+          uploaded.push(saved);
+        } catch (e) {
+          console.error('Upload failed for', file.name, e);
+          alert(`Failed to upload ${file.name}: ${e.message || 'Unknown error'}`);
+        }
       }
+      
+      if (uploaded.length) {
+        const updatedRecords = [...previousRecords, ...uploaded];
+        setPreviousRecords(updatedRecords);
+        localStorage.setItem('uploadedRecords', JSON.stringify(updatedRecords));
+        console.log('Updated records list:', updatedRecords);
+      }
+      
+      // Keep a local UI list for in-session view
+      setUploadedFiles([...uploadedFiles, ...files.map(f => ({ name: f.name }))]);
+    } catch (err) {
+      console.error('Upload process error:', err);
+      alert('Error during upload process: ' + (err.message || 'Unknown error'));
     }
-    if (uploaded.length) {
-      const updatedRecords = [...previousRecords, ...uploaded];
-      setPreviousRecords(updatedRecords);
-      localStorage.setItem('uploadedRecords', JSON.stringify(updatedRecords));
-    }
-    // Keep a local UI list for in-session view
-    setUploadedFiles([...uploadedFiles, ...files.map(f => ({ name: f.name }))]);
+    
     event.target.value = '';
   };
 
@@ -79,8 +92,14 @@ export default function UploadReport() {
     // If record has a fileUrl from the server, use it; else fallback local object
     if (record.fileUrl) {
       const link = document.createElement('a');
-      const backendOrigin = 'http://localhost:5000';
-      link.href = record.fileUrl.startsWith('http') ? record.fileUrl : `${backendOrigin}${record.fileUrl}`;
+      const backendOrigin = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      // Remove any duplicate slashes when joining URLs
+      const fileUrl = record.fileUrl.startsWith('http') 
+        ? record.fileUrl 
+        : `${backendOrigin}${record.fileUrl.startsWith('/') ? record.fileUrl : `/${record.fileUrl}`}`;
+      
+      console.log('Downloading from URL:', fileUrl);
+      link.href = fileUrl;
       link.download = record.originalName || record.name || 'report';
       document.body.appendChild(link);
       link.click();
@@ -293,7 +312,9 @@ export default function UploadReport() {
               >
                 <div>
                   <h3 className="text-sm font-mono text-[#333] mb-1">{record.originalName || record.name}</h3>
-                  <p className="text-xs text-gray-500 mb-3">Uploaded on {new Date(record.createdAt || record.uploadDate).toLocaleDateString()}</p>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Uploaded on {record.createdAt || record.uploadDate ? new Date(record.createdAt || record.uploadDate).toLocaleDateString() : 'Unknown date'}
+                  </p>
                 </div>
                 <div className="flex justify-end gap-3">
                   <button

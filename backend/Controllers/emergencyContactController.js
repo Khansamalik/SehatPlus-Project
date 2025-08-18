@@ -205,9 +205,16 @@ export const getAllEmergencyData = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming middleware adds user to req
     
+    console.log(`Getting all emergency data for user ID: ${userId}`);
+    
     const contacts = await EmergencyContact.find({ userId });
+    console.log(`Found ${contacts.length} contacts for user ID: ${userId}`);
+    
     const services = await PreferredService.find({ userId });
+    console.log(`Found ${services.length} services for user ID: ${userId}`);
+    
     const patientInfo = await PatientInfo.findOne({ userId }) || {};
+    console.log(`Patient info found: ${patientInfo ? 'Yes' : 'No'}`);
     
     res.status(200).json({
       contacts,
@@ -216,6 +223,7 @@ export const getAllEmergencyData = async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
+    console.error('Error in getAllEmergencyData:', error);
     res.status(500).json({ message: error.message });
   }
 };

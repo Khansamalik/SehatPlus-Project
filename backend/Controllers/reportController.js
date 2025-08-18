@@ -58,6 +58,7 @@ export const uploadReport = async (req, res) => {
       tags: tags ? (Array.isArray(tags) ? tags : String(tags).split(',').map(t => t.trim()).filter(Boolean)) : [],
       filePath: req.file.path,
       fileUrl,
+      uploadDate: new Date(), // Ensure upload date is always set
     });
 
     res.status(201).json(report);

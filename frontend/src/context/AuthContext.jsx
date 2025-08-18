@@ -73,6 +73,13 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = (userData, authToken) => {
+    if (!authToken) {
+      console.error('Login attempted without auth token!');
+      return;
+    }
+    
+    console.log('📝 Login with token:', authToken.substring(0, 10) + '...');
+    
     setIsAuthenticated(true);
     setUser(userData);
     setToken(authToken);
@@ -91,13 +98,25 @@ export function AuthProvider({ children }) {
     }
     
     // Save to localStorage
-    localStorage.setItem('token', authToken);
-    localStorage.setItem('user', JSON.stringify(userData));
+    try {
+      localStorage.setItem('token', authToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      console.log('✅ Auth data saved to localStorage');
+    } catch (e) {
+      console.error('❌ Failed to save auth data to localStorage:', e);
+    }
     
-    console.log('User logged in:', { userData, tokenExists: !!authToken, premium: userData.premium });
+    console.log('👤 User logged in:', { 
+      id: userData._id,
+      name: userData.name,
+      tokenExists: !!authToken, 
+      premium: userData.premium 
+    });
   };
   
   const logout = () => {
+    console.log('🚪 Logging out user...');
+    
     setIsAuthenticated(false);
     setIsPremium(false);
     setPremiumPlan(null);
@@ -105,12 +124,25 @@ export function AuthProvider({ children }) {
     setToken(null);
     
     // Clear localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('isPremium');
-    localStorage.removeItem('premiumPlan');
+    try {
+      // Keep a copy of what we're removing for debugging
+      const previousToken = localStorage.getItem('token');
+      const previousUser = localStorage.getItem('user');
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('isPremium');
+      localStorage.removeItem('premiumPlan');
+      
+      console.log('✅ Auth data cleared from localStorage', {
+        hadToken: !!previousToken,
+        hadUser: !!previousUser
+      });
+    } catch (e) {
+      console.error('❌ Failed to clear auth data from localStorage:', e);
+    }
     
-    console.log('User logged out');
+    console.log('👋 User logged out');
   };
 
   const upgradeToPremium = async (plan) => {

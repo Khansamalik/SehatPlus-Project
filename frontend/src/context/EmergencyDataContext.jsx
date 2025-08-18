@@ -33,8 +33,11 @@ export function EmergencyDataProvider({ children }) {
     if (!isAuthenticated) return;
     setIsLoading(true);
     setError(null);
+    console.log('🔄 Refreshing emergency data...');
     try {
+      console.log('📡 Calling API: fetchAllEmergencyData()');
       const data = await fetchAllEmergencyData();
+      console.log('✅ API Response:', data);
       const nextContacts = Array.isArray(data?.contacts) ? data.contacts : [];
       const nextServices = Array.isArray(data?.services) ? data.services : [];
       const nextPatientInfo = data?.patientInfo || {};
@@ -42,8 +45,10 @@ export function EmergencyDataProvider({ children }) {
       setServices(nextServices);
       setPatientInfo(nextPatientInfo);
       setLastLoadedAt(new Date().toISOString());
+      console.log('💾 Persisting to localStorage cache');
       persistCache({ contacts: nextContacts, services: nextServices, patientInfo: nextPatientInfo });
     } catch (e) {
+      console.error('❌ API Error:', e);
       setError(e?.message || 'Failed to load emergency data');
       // Fallback to cache
       try {
@@ -61,6 +66,12 @@ export function EmergencyDataProvider({ children }) {
 
   useEffect(() => {
     if (isAuthenticated) {
+      // Test API connectivity
+      fetch(import.meta.env.VITE_API_URL)
+        .then(res => res.text())
+        .then(data => console.log('API Connection Test:', data))
+        .catch(err => console.error('API Connection Error:', err));
+        
       // Pre-hydrate from local cache for instant UI while network loads
       try {
         const c = localStorage.getItem('emergencyContacts');
@@ -85,12 +96,14 @@ export function EmergencyDataProvider({ children }) {
 
   // Derived helpers
   const preferredAmbulance = useMemo(() => {
+    if (!Array.isArray(services)) return null;
     const last = [...services].reverse().find(s => s?.ambulance);
     return last?.ambulance || null;
   }, [services]);
 
   const preferredHospitalName = useMemo(() => {
     if (patientInfo?.preferredHospital) return patientInfo.preferredHospital;
+    if (!Array.isArray(services)) return null;
     const last = [...services].reverse().find(s => s?.hospital);
     return last?.hospital || null;
   }, [services, patientInfo]);

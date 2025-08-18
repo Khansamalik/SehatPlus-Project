@@ -28,7 +28,9 @@ app.use(cors());
 app.use(express.json());
 
 // uploaded files statically serve krega
-app.use('/uploads', express.static(path.resolve('uploads')));
+const uploadsPath = path.resolve('uploads');
+console.log('Serving uploads from:', uploadsPath);
+app.use('/uploads', express.static(uploadsPath));
 
 // Test route
 app.get('/', (req, res) => {
@@ -36,12 +38,18 @@ app.get('/', (req, res) => {
 });
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI, {
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
+console.log('Attempting to connect to MongoDB at:', MONGO_URI ? MONGO_URI.split('@')[1] || '(hidden)' : 'undefined');
+
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('✅ MongoDB connected'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+.then(() => console.log('✅ MongoDB connected successfully'))
+.catch((err) => {
+  console.error('❌ MongoDB connection error:', err.message);
+  console.error('Make sure your MongoDB Atlas connection string is correct and network access is allowed.');
+});
 
 // API Routes
 app.use('/api/auth', authRoutes);

@@ -18,10 +18,19 @@ http.interceptors.request.use((config) => {
 
 // Handle auth failures globally
 http.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    console.log(`✅ API Success: ${res.config.method.toUpperCase()} ${res.config.url}`, res.status);
+    return res;
+  },
   (error) => {
     const status = error?.response?.status;
     const msg = error?.response?.data?.message;
+    console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
+      status,
+      message: msg,
+      error
+    });
+    
     if (status === 401) {
       // Clear auth and redirect to login
       localStorage.removeItem('token');
