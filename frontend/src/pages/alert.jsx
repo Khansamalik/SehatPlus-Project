@@ -253,7 +253,7 @@ export default function Alert() {
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Select Service</label>
                 <div className="grid grid-cols-2 gap-3">
-                  {ambulanceServices.map((service) => (
+                  {Array.isArray(ambulanceServices) && ambulanceServices.map((service) => (
                     <button
                       key={service}
                       onClick={() => setSelectedService(service)}
@@ -438,7 +438,7 @@ export default function Alert() {
                   </button>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {emergencyContacts.map((contact, index) => (
+                    {Array.isArray(emergencyContacts) && emergencyContacts.map((contact, index) => (
                       <div key={contact.id || index} className="bg-[#f8fafc] p-4 rounded-lg border border-[#e2e8f0] hover:border-[#8B0000] transition group">
                         <div className="flex justify-between items-center">
                           <div>
@@ -520,7 +520,7 @@ export default function Alert() {
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">Hospitals Near You (Sorted by Distance)</h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {hospitalRecommendations.map((hospital, index) => (
+                  {Array.isArray(hospitalRecommendations) && hospitalRecommendations.map((hospital, index) => (
                     <HospitalRecommendation 
                       key={hospital.id} 
                       hospital={hospital} 

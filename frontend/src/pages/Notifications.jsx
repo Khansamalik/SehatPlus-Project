@@ -61,7 +61,7 @@ export default function Notifications() {
         )}
 
         <div className="space-y-3">
-          {items.map(n => (
+          {Array.isArray(items) && items.map(n => (
             <div key={n._id} className={`bg-white rounded-lg shadow p-4 flex items-start justify-between border ${n.read ? 'border-gray-100' : 'border-[#F2D7D9]'}`}>
               <div className="flex items-start gap-3">
                 <div className="mt-1"> <TypeIcon type={n.type} /> </div>

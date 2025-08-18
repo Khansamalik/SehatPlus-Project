@@ -354,7 +354,7 @@ export default function HealthAppPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Feature Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {features.map((feature) => (
+          {Array.isArray(features) && features.map((feature) => (
             <FeatureCard 
               key={feature.title}
               icon={feature.icon}
@@ -452,7 +452,7 @@ export default function HealthAppPage() {
 
           <div className="flex overflow-x-auto pb-4 space-x-4 scrollbar-hide">
             {effectivePremiumStatus ? (
-              fullMedicinesList.map((medicine) => (
+              Array.isArray(fullMedicinesList) && fullMedicinesList.map((medicine) => (
                 <MedicineCard key={medicine.id} medicine={medicine} onOrderClick={() => handleOrderClick(medicine, 'medicine')} />
               ))
             ) : (
@@ -496,7 +496,7 @@ export default function HealthAppPage() {
 
           <div className="flex overflow-x-auto pb-4 space-x-4 scrollbar-hide">
             {effectivePremiumStatus ? (
-              fullLabsList.map((lab) => (
+              Array.isArray(fullLabsList) && fullLabsList.map((lab) => (
                 <LabCard key={lab.id} lab={lab} onOrderClick={() => handleOrderClick(lab, 'lab')} />
               ))
             ) : (
@@ -904,7 +904,7 @@ export default function HealthAppPage() {
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {contacts.map((contact, index) => (
+                  {Array.isArray(contacts) && contacts.map((contact, index) => (
                     <div key={index} className="bg-[#f8fafc] p-4 rounded-lg border border-[#e2e8f0] hover:border-[#8B0000] transition group">
                       <div className="flex justify-between items-center">
                         <div>
@@ -993,7 +993,7 @@ export default function HealthAppPage() {
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Select Service</label>
                   <div className="grid grid-cols-2 gap-3">
-                    {ambulanceServices.map((service) => (
+                    {Array.isArray(ambulanceServices) && ambulanceServices.map((service) => (
                       <button
                         key={service}
                         onClick={() => setSelectedService(service)}
@@ -1072,7 +1072,7 @@ export default function HealthAppPage() {
               <div className="mb-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">Hospitals Near You (Sorted by Distance)</h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {hospitalRecommendations.map((hospital, index) => (
+                  {Array.isArray(hospitalRecommendations) && hospitalRecommendations.map((hospital, index) => (
                     <HospitalRecommendation 
                       key={hospital.id || index}
                       hospital={hospital}
