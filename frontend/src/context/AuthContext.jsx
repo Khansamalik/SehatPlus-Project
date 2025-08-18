@@ -97,17 +97,21 @@ export function AuthProvider({ children }) {
       localStorage.removeItem('premiumPlan');
     }
     
-    // Save to localStorage
+    // Save to localStorage - ensure userId is saved too
     try {
       localStorage.setItem('token', authToken);
       localStorage.setItem('user', JSON.stringify(userData));
-      console.log('✅ Auth data saved to localStorage');
+      localStorage.setItem('userId', userData.id); // Ensure userId is stored
+      console.log('✅ Auth data saved to localStorage', {
+        userId: userData.id,
+        tokenFirstChars: authToken?.substring(0, 10) + '...'
+      });
     } catch (e) {
       console.error('❌ Failed to save auth data to localStorage:', e);
     }
     
     console.log('👤 User logged in:', { 
-      id: userData._id,
+      id: userData.id || userData._id,
       name: userData.name,
       tokenExists: !!authToken, 
       premium: userData.premium 
@@ -131,8 +135,10 @@ export function AuthProvider({ children }) {
       
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('userId');
       localStorage.removeItem('isPremium');
       localStorage.removeItem('premiumPlan');
+      localStorage.removeItem('userProfile');
       
       console.log('✅ Auth data cleared from localStorage', {
         hadToken: !!previousToken,

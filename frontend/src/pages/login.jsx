@@ -47,8 +47,6 @@ export default function Login() {
     console.log("Login response:", result);
     
     if (response.ok) {
-      //  Login successful
-      
       // Store user ID and token in localStorage
       localStorage.setItem("userId", result.user.id);
       localStorage.setItem("token", result.token);
@@ -57,17 +55,18 @@ export default function Login() {
       console.log("Storage after login:", {
         userId: localStorage.getItem("userId"),
         hasToken: !!localStorage.getItem("token"),
+        tokenFirstChars: localStorage.getItem("token")?.substring(0, 10) + "...",
         user: localStorage.getItem("user")
       });
       
-      // Update auth context (this will now handle premium status automatically)
+      // Update auth context (this will handle premium status automatically)
       setAuth(result.user, result.token);
       
-      // Small delay to ensure context is updated before navigation
+      // Alert and navigate after a short delay to ensure context is updated
       setTimeout(() => {
         alert("Login successful!");
         navigate("/pro");
-      }, 300);
+      }, 500);
     } else {
       //  Login failed
       alert(result.message || "Invalid credentials");

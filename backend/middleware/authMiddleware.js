@@ -16,17 +16,20 @@ export const authMiddleware = (req, res, next) => {
     }
     
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || 'dev_secret_change_me';
+    const decoded = jwt.verify(token, secret);
     console.log('Token decoded successfully:', decoded);
     
     // Add the user info to the request
     // Support multiple possible payload shapes: { id }, { userId }, { _id }
     const extractedId = decoded?.id || decoded?.userId || decoded?._id;
     if (!extractedId) {
-      console.error('Auth middleware error: Could not extract user id from token payload');
+      console.error('Auth middleware error: Could not extract user id from token payload', decoded);
       return res.status(401).json({ message: 'Authentication failed: Invalid token payload' });
     }
+    
     req.user = { id: extractedId };
+    console.log('User authenticated with ID:', extractedId);
     
     next();
   } catch (error) {
