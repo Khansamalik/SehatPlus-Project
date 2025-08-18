@@ -4,7 +4,7 @@ import {
   getAlertById,
   getUserAlerts,
   updateAlertStatus
-} from '../controllers/alertController.js';
+} from '../Controllers/alertController.js';
 
 const router = express.Router();
 

@@ -8,7 +8,7 @@ import {
   getCart,
   setPharmacy,
   getPharmacy
-} from '../controllers/userController.js';
+} from '../Controllers/userController.js';
 
 const router = express.Router();
 

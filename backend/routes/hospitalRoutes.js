@@ -3,7 +3,7 @@ import {
   recommendHospitals,
   getAllHospitals,
   getHospitalById
-} from '../controllers/hospitalController.js';
+} from '../Controllers/hospitalController.js';
 
 const router = express.Router();
 
