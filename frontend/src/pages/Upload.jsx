@@ -193,11 +193,11 @@ export default function UploadReport() {
                             <p className="text-gray-800 text-sm">{emergencyData.patientInfo.medicalHistory}</p>
                           </div>
                         )}
-                        {emergencyData.contacts?.length > 0 && (
+                        {emergencyData.contacts && Array.isArray(emergencyData.contacts) && emergencyData.contacts.length > 0 && (
                           <div>
                             <span className="text-sm font-medium text-gray-600">Emergency Contacts:</span>
                             <div className="mt-1">
-                              {Array.isArray(emergencyData.contacts) && emergencyData.contacts.map((contact, index) => (
+                              {emergencyData.contacts.map((contact, index) => (
                                 <p key={index} className="text-gray-800 text-sm">
                                   {contact.name} - {contact.number}
                                 </p>

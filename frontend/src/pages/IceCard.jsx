@@ -153,9 +153,9 @@ export default function IceCard() {
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">Emergency Contacts</h3>
                 <div className="space-y-2 text-sm">
-                  {emergencyData.contacts?.length > 0 ? (
-                    Array.isArray(emergencyData.contacts) && emergencyData.contacts.map((contact, index) => (
-                      <p key={contact.id}>
+                  {emergencyData.contacts && Array.isArray(emergencyData.contacts) && emergencyData.contacts.length > 0 ? (
+                    emergencyData.contacts.map((contact, index) => (
+                      <p key={contact.id || index}>
                         <span className="font-medium">{contact.name}:</span> {contact.number}
                       </p>
                     ))
