@@ -19,7 +19,7 @@ import {
   
   // Complete data
   getAllEmergencyData
-} from '../controllers/emergencyContactController.js';
+} from '../Controllers/emergencyContactController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
