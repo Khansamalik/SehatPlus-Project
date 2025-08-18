@@ -34,6 +34,7 @@ export default function Login() {
   };
 
   try {
+    console.log(`Attempting login to ${import.meta.env.VITE_API_URL}/auth/login`);
     const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
       method: "POST",
       headers: {
@@ -47,16 +48,26 @@ export default function Login() {
     
     if (response.ok) {
       //  Login successful
-      alert("Login successful!");
       
       // Store user ID and token in localStorage
       localStorage.setItem("userId", result.user.id);
       localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      
+      console.log("Storage after login:", {
+        userId: localStorage.getItem("userId"),
+        hasToken: !!localStorage.getItem("token"),
+        user: localStorage.getItem("user")
+      });
       
       // Update auth context (this will now handle premium status automatically)
       setAuth(result.user, result.token);
       
-      navigate("/pro");
+      // Small delay to ensure context is updated before navigation
+      setTimeout(() => {
+        alert("Login successful!");
+        navigate("/pro");
+      }, 300);
     } else {
       //  Login failed
       alert(result.message || "Invalid credentials");

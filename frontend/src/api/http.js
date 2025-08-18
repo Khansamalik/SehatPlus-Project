@@ -9,8 +9,10 @@ http.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log(`🔒 Attaching token to request: ${config.method} ${config.url}`);
   } else {
     delete config.headers.Authorization;
+    console.log(`⚠️ No token found for request: ${config.method} ${config.url}`);
   }
   return config;
 });
@@ -33,6 +35,15 @@ http.interceptors.response.use(
     });
     
     if (status === 401) {
+      // Add detailed logging for 401 errors
+      console.warn(`🔴 401 Unauthorized from ${error.config?.url}. Token exists: ${!!localStorage.getItem('token')}`);
+      console.warn('Request details:', {
+        headers: error.config?.headers,
+        method: error.config?.method,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL
+      });
+      
       // Clear auth and redirect to login
       localStorage.removeItem('token');
       localStorage.removeItem('user');

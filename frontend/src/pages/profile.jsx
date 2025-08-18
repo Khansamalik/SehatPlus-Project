@@ -70,6 +70,11 @@ export default function Profile() {
         setForm(res.data);
       } catch (err) {
         console.error("Failed to fetch user:", err);
+        if (err.response?.status === 401) {
+          // Token expired or invalid
+          alert("Session expired. Please login again.");
+          logout();
+        }
         navigate("/login");
       }
     };
@@ -86,7 +91,7 @@ export default function Profile() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-  const res = await axios.put(`${API}/api/profile/${userId}`, form);
+  const res = await axios.put(`${API}/profile/${userId}`, form);
       setUser(res.data);
       localStorage.setItem("userProfile", JSON.stringify(res.data));
       setEditing(false);

@@ -33,29 +33,29 @@ import Notifications from './pages/Notifications.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
 import { AuthProvider } from './context/AuthContext';
 import { EmergencyDataProvider } from './context/EmergencyDataContext.jsx';
+import AuthGuard from './components/AuthGuard.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Root />}>
       <Route path="" element={<Home />} />
       <Route path="premium" element={<PremiumHome />} />
-      <Route path="pro" element={<PremiumDashboard />} />
-      <Route path="emergency-patient" element={<EmergencyContacts />} />
-      <Route path="ice-card" element={<IceCard />} />
-  <Route path="ice/public/:code" element={<IcePublic />} />
-  <Route path="approve-access/:token" element={<IceApprove />} />
-      <Route path="map" element={<MapView />} />
-  <Route path="pmap" element={<PMap />} />
-      <Route path="upload-report" element={<UploadReport />} /> 
-      <Route path="alert" element={<Alert />} />
+      <Route path="pro" element={<AuthGuard><PremiumDashboard /></AuthGuard>} />
+      <Route path="emergency-patient" element={<AuthGuard><EmergencyContacts /></AuthGuard>} />
+      <Route path="ice-card" element={<AuthGuard><IceCard /></AuthGuard>} />
+      <Route path="ice/public/:code" element={<IcePublic />} />
+      <Route path="approve-access/:token" element={<IceApprove />} />
+      <Route path="map" element={<AuthGuard><MapView /></AuthGuard>} />
+      <Route path="pmap" element={<AuthGuard><PMap /></AuthGuard>} />
+      <Route path="upload-report" element={<AuthGuard><UploadReport /></AuthGuard>} /> 
+      <Route path="alert" element={<AuthGuard><Alert /></AuthGuard>} />
       <Route path="about" element={<AboutUs />} />
       <Route path="register" element={<Registration />} />
       <Route path="contact" element={<ContactUs />} />
       <Route path="login" element={<Login />} />
-      <Route path="profile" element={<Profile />} />
-  <Route path="notifications" element={<Notifications />} />
-  <Route path="privacy-policy" element={<PrivacyPolicy />} />
-
+      <Route path="profile" element={<AuthGuard><Profile /></AuthGuard>} />
+      <Route path="notifications" element={<AuthGuard><Notifications /></AuthGuard>} />
+      <Route path="privacy-policy" element={<PrivacyPolicy />} />
     </Route>
   )
 );
