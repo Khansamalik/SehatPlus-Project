@@ -41,7 +41,8 @@ export default function IceCard() {
         const res = await ensureIceCode();
         if (res?.code) {
           setIceCode(res.code);
-          const baseUrl = (import.meta.env?.VITE_PUBLIC_BASE_URL || window.location.origin).replace(/\/$/, '');
+          // Use the production URL from environment variable if available, fallback to current origin
+          const baseUrl = (import.meta.env.VITE_API_URL || window.location.origin).replace(/\/api$/, '').replace(/\/$/, '');
           const url = `${baseUrl}/ice/public/${res.code}`;
           setPublicUrl(url);
           setQrCodeData(url);
@@ -201,9 +202,9 @@ export default function IceCard() {
             {publicUrl && (
               <>
                 <p className="text-xs text-gray-600 mb-1 break-all">Scan or visit: {publicUrl}</p>
-                {publicUrl.includes('localhost') && (
+                {(publicUrl.includes('localhost') || publicUrl.includes('192.168.')) && (
                   <p className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 inline-block px-2 py-1 rounded">
-                    Tip: Set VITE_PUBLIC_BASE_URL to your PC IP (e.g. http://192.168.x.x:5180) for scanning from a phone.
+                    Tip: For development only. On production, this QR code will use your deployed URL.
                   </p>
                 )}
               </>

@@ -55,7 +55,7 @@ export default function Profile() {
   const [showDowngradeModal, setShowDowngradeModal] = useState(false);
 
   const userId = localStorage.getItem("userId");
-  const API = "http://localhost:5000";
+  const API = import.meta.env.VITE_API_URL;
   
   if (!userId) {
     navigate("/login");
@@ -65,7 +65,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-  const res = await axios.get(`${API}/api/profile/${userId}`);
+  const res = await axios.get(`${API}/profile/${userId}`);
         setUser(res.data);
         setForm(res.data);
       } catch (err) {

@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../api/config';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = API_BASE_URL;
 
 // Get user's current location
 export const getCurrentLocation = () => {

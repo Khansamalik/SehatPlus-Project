@@ -155,7 +155,7 @@ export function AuthProvider({ children }) {
         throw new Error('User not authenticated');
       }
       
-      const response = await fetch(`http://localhost:5000/api/profile/${userId}/premium`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/profile/${userId}/premium`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ export function AuthProvider({ children }) {
         throw new Error('User not authenticated');
       }
       
-      const response = await fetch(`http://localhost:5000/api/profile/${userId}/downgrade`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/profile/${userId}/downgrade`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -50,7 +50,7 @@ export const requestFullHistory = async (req, res) => {
   if (!contacts.length) return res.status(400).json({ message: 'No emergency contacts to approve' });
 
   const approvalToken = genCode();
-  const approvalUrl = `${process.env.FRONTEND_URL || 'http://localhost:5174'}/approve-access/${approvalToken}`;
+  const approvalUrl = `${process.env.FRONTEND_URL || 'https://sehatplus-project-production.up.railway.app'}/approve-access/${approvalToken}`;
 
   // In a real app: store token with TTL here we store in-memory via process var or could extend model
   globalThis.__iceApprovals = globalThis.__iceApprovals || new Map();

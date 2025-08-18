@@ -92,7 +92,7 @@ export default function UploadReport() {
     const { fileUrl, absoluteFileUrl } = record;
     if (absoluteFileUrl || fileUrl) {
       const link = document.createElement('a');
-      const rawBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+      const rawBase = import.meta.env.VITE_API_URL;
       const origin = rawBase.replace(/\/api$/i, '');
       const finalUrl = absoluteFileUrl || (fileUrl.startsWith('http') ? fileUrl : `${origin}${fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl}`);
       console.log('Downloading from URL:', finalUrl);

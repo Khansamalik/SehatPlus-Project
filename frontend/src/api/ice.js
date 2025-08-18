@@ -1,6 +1,6 @@
-import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
+import axios from 'axios';
+import { API_BASE_URL } from './config';
 
 const createInstance = (auth = false) => {
   const headers = {};
@@ -8,7 +8,7 @@ const createInstance = (auth = false) => {
     const token = localStorage.getItem('token');
     headers['Authorization'] = token ? `Bearer ${token}` : '';
   }
-  return axios.create({ baseURL: API_URL, headers });
+  return axios.create({ baseURL: API_BASE_URL, headers });
 };
 
 // Authenticated: ensure or create a code

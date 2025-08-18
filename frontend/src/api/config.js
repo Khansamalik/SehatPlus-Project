@@ -1,5 +1,7 @@
 // Centralized API configuration
-// RAW value can be either https://domain (no /api) or https://domain/api
+// IMPORTANT: Set VITE_API_URL in your .env to the full backend API path, e.g.
+// VITE_API_URL=https://sehatplus-project-production-9951.up.railway.app/api
+// Do NOT add or remove /api unless your backend routes change.
 const RAW = (import.meta.env.VITE_API_URL || '').trim();
 
 // Normalize (remove trailing slash)
