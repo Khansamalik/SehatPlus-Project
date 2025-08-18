@@ -25,12 +25,14 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: '*', // TODO: restrict to frontend domain in production
-  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization']
+  // Use string instead of regex or URL object to avoid path-to-regexp errors
+  origin: '*',
+  credentials: false,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 app.use(express.json());
-app.options('*', cors());
 
 // uploaded files statically serve krega
 const uploadsPath = path.resolve('uploads');
@@ -39,10 +41,11 @@ app.use('/uploads', express.static(uploadsPath));
 
 // Health/test routes
 app.get('/', (req, res) => {
-  res.send('🚀 Backend root OK');
+  res.send('Backend root OK');
 });
+// Simplified health route to avoid any path-to-regexp issues
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+  res.json({ status: 'ok' });
 });
 
 // MongoDB Connection
