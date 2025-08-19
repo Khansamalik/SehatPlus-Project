@@ -3,6 +3,7 @@ import { CloudUpload, FileText, Trash2, Download, Eye, User, Heart, AlertTriangl
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from '../context/AuthContext';
 import { listReports as apiListReports, uploadReport as apiUploadReport, deleteReport as apiDeleteReport } from '../api/reports';
+import { candidateAssetUrls, buildAssetUrl } from '../api/config';
 import { fetchAllEmergencyData } from '../api/emergency';
 
 export default function UploadReport() {
@@ -17,12 +18,25 @@ export default function UploadReport() {
     // load from backend; fallback to localStorage
     const init = async () => {
       try {
-        const reports = await apiListReports();
+        let reports = await apiListReports();
+        // Ensure each has absoluteFileUrl for download reliability
+        reports = reports.map(r => ({
+          ...r,
+          absoluteFileUrl: r.absoluteFileUrl || (r.fileUrl ? buildAssetUrl(r.fileUrl) : (r.fileName ? buildAssetUrl(`/uploads/${r.fileName}`) : null))
+        }));
         setPreviousRecords(reports);
         localStorage.setItem('uploadedRecords', JSON.stringify(reports));
       } catch (e) {
         const saved = localStorage.getItem('uploadedRecords');
-        if (saved) setPreviousRecords(JSON.parse(saved));
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved).map(r => ({
+              ...r,
+              absoluteFileUrl: r.absoluteFileUrl || (r.fileUrl ? buildAssetUrl(r.fileUrl) : (r.fileName ? buildAssetUrl(`/uploads/${r.fileName}`) : null))
+            }));
+            setPreviousRecords(parsed);
+          } catch { setPreviousRecords([]); }
+        }
       }
 
       try {
@@ -88,35 +102,42 @@ export default function UploadReport() {
     localStorage.setItem('uploadedRecords', JSON.stringify(updatedRecords));
   };
 
-  const handleDownload = (record) => {
+  const handleDownload = async (record) => {
     try {
-      const { fileUrl, absoluteFileUrl } = record;
-      // Compute candidate URL
-      const rawBase = (import.meta.env.VITE_API_URL || '').trim();
-      const origin = rawBase.replace(/\/api$/i, '');
-      let finalUrl = absoluteFileUrl || '';
-      if (!finalUrl && fileUrl) {
-        if (/^https?:/i.test(fileUrl)) finalUrl = fileUrl; else finalUrl = `${origin}${fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl}`;
+      const { fileUrl, absoluteFileUrl, fileName } = record;
+      // Build candidate URLs
+      let candidates = [];
+      if (absoluteFileUrl) candidates.push(absoluteFileUrl);
+      if (fileUrl) candidates = candidates.concat(candidateAssetUrls(fileUrl));
+      if (fileName) candidates = candidates.concat(candidateAssetUrls(`/uploads/${fileName}`));
+      // Deduplicate
+      candidates = [...new Set(candidates.filter(Boolean))];
+      // As a final fallback, if we only have a relative uploads path inside fileUrl
+      if ((!candidates.length) && fileUrl && /\/uploads\//.test(fileUrl)) {
+        candidates = candidateAssetUrls(fileUrl);
       }
-      // Fallback: if still empty, try reconstructing from stored fileName
-      if (!finalUrl && (record.fileName || record.file)) {
-        if (record.fileName) finalUrl = `${origin}/uploads/${record.fileName}`;
+      // Try each candidate with HEAD to find a working one
+      let working = null;
+      for (const url of candidates) {
+        try {
+          const resp = await fetch(url, { method: 'HEAD' });
+            if (resp.ok) { working = url; break; }
+            console.warn('[Download] Candidate failed', url, resp.status);
+        } catch (e) {
+          console.warn('[Download] Candidate error', url, e.message);
+        }
       }
+      // If none validated, still attempt first candidate to let browser try
+      const finalUrl = working || candidates[0];
       if (finalUrl) {
-        console.log('[Download] Attempting', finalUrl);
-        // Quick validation (non‑blocking if it fails)
-        fetch(finalUrl, { method: 'HEAD' }).then(r => {
-          if (!r.ok) console.warn('[Download] HEAD check failed', r.status, finalUrl);
-        }).catch(err => console.warn('[Download] HEAD check error', err));
+        console.log('[Download] Using', finalUrl);
         const link = document.createElement('a');
         link.href = finalUrl;
-        // If PDF/image let browser preview; only set download attr if we want forced download
-        const name = record.originalName || record.name || 'report';
-        link.setAttribute('download', name);
+        link.setAttribute('download', record.originalName || record.name || 'report');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        return;
+        return; 
       }
     } catch (e) {
       console.error('Download failed to start:', e);
