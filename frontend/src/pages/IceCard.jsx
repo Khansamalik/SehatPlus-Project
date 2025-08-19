@@ -41,9 +41,12 @@ export default function IceCard() {
         const res = await ensureIceCode();
         if (res?.code) {
           setIceCode(res.code);
-          // Use the production URL from environment variable if available, fallback to current origin
-          const baseUrl = (import.meta.env.VITE_API_URL || window.location.origin).replace(/\/api$/, '').replace(/\/$/, '');
-          const url = `${baseUrl}/ice/public/${res.code}`;
+          // Build a public share URL using the FRONTEND origin, NOT the backend API URL.
+          // Priority: VITE_PUBLIC_APP_URL (explicit) -> window.location.origin (runtime) -> final fallback remove /api if user misconfigured.
+          const explicit = (import.meta.env.VITE_PUBLIC_APP_URL || '').trim();
+          const candidateOrigin = explicit || window.location.origin;
+          const cleanOrigin = candidateOrigin.replace(/\/api$/i, '').replace(/\/$/, '');
+          const url = `${cleanOrigin}/ice/public/${res.code}`;
           setPublicUrl(url);
           setQrCodeData(url);
         } else {

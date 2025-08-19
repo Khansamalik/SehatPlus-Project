@@ -1,7 +1,9 @@
-// Centralized API configuration
-// IMPORTANT: Set VITE_API_URL in your .env to the full backend API path, e.g.
-// VITE_API_URL=https://sehatplus-project-production-9951.up.railway.app/api
-// Do NOT add or remove /api unless your backend routes change.
+// Centralized API & App configuration
+// Backend API: set VITE_API_URL to the full backend API root (including /api), e.g.
+//   VITE_API_URL=https://your-backend.up.railway.app/api
+// Frontend Public App (for generating shareable links): set VITE_PUBLIC_APP_URL to the deployed frontend origin, e.g.
+//   VITE_PUBLIC_APP_URL=https://your-frontend.vercel.app
+// If VITE_PUBLIC_APP_URL is not set we fallback to window.location.origin at runtime where needed.
 const RAW = (import.meta.env.VITE_API_URL || '').trim();
 
 // Normalize (remove trailing slash)
@@ -12,6 +14,9 @@ export const API_ORIGIN = API_BASE_URL.replace(/\/api$/i, '');
 
 // Optional explicit asset origin (use this if frontend & backend are on different domains)
 export const ASSET_ORIGIN = (import.meta.env.VITE_ASSET_ORIGIN || '').trim() || API_ORIGIN;
+
+// Optional explicit public app URL (used for user-facing share links like /ice/public/<code>)
+export const PUBLIC_APP_URL = (import.meta.env.VITE_PUBLIC_APP_URL || '').trim().replace(/\/$/, '');
 
 export function buildApiUrl(path) {
   return `${API_BASE_URL}${path.startsWith('/') ? path : '/' + path}`;
