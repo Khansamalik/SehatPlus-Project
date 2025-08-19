@@ -60,7 +60,7 @@ export default function Registration() {
   return (
   <div>
     <div className="h-24"></div>
-    <div className="flex min-h-screen items-stretch justify-center font-poppins bg-gray-50 py-10">
+    <div className="flex min-h-screen items-stretch justify-center font-poppins bg-white py-10">
       {/* Illustration side */}
       <div className="hidden md:flex w-1/2 justify-end pr-8">
         <div className="w-full max-w-md h-full flex">
