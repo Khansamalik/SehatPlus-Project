@@ -89,19 +89,37 @@ export default function UploadReport() {
   };
 
   const handleDownload = (record) => {
-    const { fileUrl, absoluteFileUrl } = record;
-    if (absoluteFileUrl || fileUrl) {
-      const link = document.createElement('a');
-      const rawBase = import.meta.env.VITE_API_URL;
+    try {
+      const { fileUrl, absoluteFileUrl } = record;
+      // Compute candidate URL
+      const rawBase = (import.meta.env.VITE_API_URL || '').trim();
       const origin = rawBase.replace(/\/api$/i, '');
-      const finalUrl = absoluteFileUrl || (fileUrl.startsWith('http') ? fileUrl : `${origin}${fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl}`);
-      console.log('Downloading from URL:', finalUrl);
-      link.href = finalUrl;
-      link.download = record.originalName || record.name || 'report';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      return;
+      let finalUrl = absoluteFileUrl || '';
+      if (!finalUrl && fileUrl) {
+        if (/^https?:/i.test(fileUrl)) finalUrl = fileUrl; else finalUrl = `${origin}${fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl}`;
+      }
+      // Fallback: if still empty, try reconstructing from stored fileName
+      if (!finalUrl && (record.fileName || record.file)) {
+        if (record.fileName) finalUrl = `${origin}/uploads/${record.fileName}`;
+      }
+      if (finalUrl) {
+        console.log('[Download] Attempting', finalUrl);
+        // Quick validation (non‑blocking if it fails)
+        fetch(finalUrl, { method: 'HEAD' }).then(r => {
+          if (!r.ok) console.warn('[Download] HEAD check failed', r.status, finalUrl);
+        }).catch(err => console.warn('[Download] HEAD check error', err));
+        const link = document.createElement('a');
+        link.href = finalUrl;
+        // If PDF/image let browser preview; only set download attr if we want forced download
+        const name = record.originalName || record.name || 'report';
+        link.setAttribute('download', name);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      }
+    } catch (e) {
+      console.error('Download failed to start:', e);
     }
     if (record.file) {
       const url = URL.createObjectURL(record.file);
