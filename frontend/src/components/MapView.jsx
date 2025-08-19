@@ -22,7 +22,9 @@ const MapView = ({ hospitals, userLocation }) => {
       
       return () => {
         // Clean up script on unmount
-        document.head.removeChild(script);
+        if (script && script.parentNode) {
+          document.head.removeChild(script);
+        }
       };
     }
   }, []);
