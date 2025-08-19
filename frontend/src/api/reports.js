@@ -33,7 +33,17 @@ export const uploadReport = async (file, { description = '', tags = [] } = {}) =
 export const listReports = async () => {
   const api = createAuthInstance();
   const res = await api.get('/reports');
-  return res.data.map(r => ({
+  let raw = res.data;
+  // Accept shapes: Array | { reports: [] } | anything else -> []
+  if (Array.isArray(raw)) {
+    // ok
+  } else if (raw && Array.isArray(raw.reports)) {
+    raw = raw.reports;
+  } else {
+    console.warn('listReports: unexpected response shape, coercing to empty array', raw);
+    raw = [];
+  }
+  return raw.map(r => ({
     ...r,
     absoluteFileUrl: r.fileUrl ? buildAssetUrl(r.fileUrl) : null
   }));

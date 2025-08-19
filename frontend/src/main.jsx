@@ -33,6 +33,7 @@ import Notifications from './pages/Notifications.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
 import { AuthProvider } from './context/AuthContext';
 import { EmergencyDataProvider } from './context/EmergencyDataContext.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import AuthGuard from './components/AuthGuard.jsx';
 
 const router = createBrowserRouter(
@@ -61,9 +62,11 @@ const router = createBrowserRouter(
 );
 
 createRoot(document.getElementById('root')).render(
-  <AuthProvider>
-    <EmergencyDataProvider>
-      <RouterProvider router={router} />
-    </EmergencyDataProvider>
-  </AuthProvider>
+  <ErrorBoundary>
+    <AuthProvider>
+      <EmergencyDataProvider>
+        <RouterProvider router={router} />
+      </EmergencyDataProvider>
+    </AuthProvider>
+  </ErrorBoundary>
 );
