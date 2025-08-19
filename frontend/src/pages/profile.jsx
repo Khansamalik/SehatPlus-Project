@@ -55,7 +55,10 @@ export default function Profile() {
   const [showDowngradeModal, setShowDowngradeModal] = useState(false);
 
   const userId = localStorage.getItem("userId");
-  const API = import.meta.env.VITE_API_URL;
+  // Full API base (likely ends with /api)
+  const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+  // Origin without /api (used for static /uploads assets like avatar files)
+  const API_ORIGIN = API.replace(/\/api$/i, '');
   
   if (!userId) {
     navigate("/login");
@@ -117,7 +120,7 @@ export default function Profile() {
     data.append('avatar', file);
     try {
       setAvatarUploading(true);
-  const res = await axios.post(`${API}/api/profile/${userId}/avatar`, data, {
+  const res = await axios.post(`${API}/profile/${userId}/avatar`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const newAvatar = res.data?.avatar;
@@ -148,7 +151,8 @@ export default function Profile() {
     }
     try {
       setPasswordLoading(true);
-      await axios.patch(`${API}/api/profile/${userId}/password`, {
+  // Avoid /api/api duplication
+  await axios.patch(`${API}/profile/${userId}/password`, {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword,
       });
@@ -200,7 +204,7 @@ export default function Profile() {
               <div className="p-6 text-center">
                 <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-[#6C0B14] mb-4 bg-gray-100">
                   <img 
-                    src={user.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${API}${user.avatar}`) : "/profile-placeholder.png"}
+                    src={user.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${API_ORIGIN}${user.avatar}`) : "/profile-placeholder.png"}
                     alt="profile"
                     className="w-full h-full object-cover"
                     onError={(e) => { e.currentTarget.src = "/profile-placeholder.png"; }}
