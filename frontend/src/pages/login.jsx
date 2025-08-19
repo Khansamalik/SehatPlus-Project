@@ -87,7 +87,7 @@ export default function Login() {
         <img
           src={login}
           alt="Login Illustration"
-          className="ml-52 mt-10 h-120 w-90 object-cover"
+          className="ml-auto mr-8 h-[400px] w-auto object-contain"
         />
       </div>
 
