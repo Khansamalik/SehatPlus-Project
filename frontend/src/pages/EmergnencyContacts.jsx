@@ -257,10 +257,17 @@ export default function EmergencyContacts() {
     try {
       console.log('Submitting patient info:', patientInfoLocal);
       const updatedInfo = await ctxSavePatientInfo(patientInfoLocal);
-      
-      // Local UI state reflect
-      // no-op, context will push fresh values
+      // Optimistically sync context snapshot into local form (in case backend sanitized fields)
+      setPatientInfoLocal({
+        name: updatedInfo?.name || '',
+        bloodGroup: updatedInfo?.bloodGroup || '',
+        medicalHistory: updatedInfo?.medicalHistory || '',
+        preferredHospital: updatedInfo?.preferredHospital || '',
+        additionalComments: updatedInfo?.additionalComments || ''
+      });
       setPatientInfoSaved(true);
+      // Optionally refresh in background to pick up any derived server changes
+      refresh();
       
       // Hide success indicator after 3 seconds
       setTimeout(() => setPatientInfoSaved(false), 3000);
@@ -535,8 +542,8 @@ export default function EmergencyContacts() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                   <input
                     type="text"
-                    value={patientInfo.name}
-                    onChange={(e) => setPatientInfo({...patientInfo, name: e.target.value})}
+                    value={patientInfoLocal.name}
+                    onChange={(e) => setPatientInfoLocal({...patientInfoLocal, name: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6C0B14] focus:border-transparent"
                     placeholder="Your full name"
                   />
@@ -544,8 +551,8 @@ export default function EmergencyContacts() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Blood Group</label>
                   <select
-                    value={patientInfo.bloodGroup}
-                    onChange={(e) => setPatientInfo({...patientInfo, bloodGroup: e.target.value})}
+                    value={patientInfoLocal.bloodGroup}
+                    onChange={(e) => setPatientInfoLocal({...patientInfoLocal, bloodGroup: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6C0B14] focus:border-transparent bg-white"
                   >
                     <option value="">Select Blood Group</option>
@@ -563,8 +570,8 @@ export default function EmergencyContacts() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Medical History</label>
                 <textarea
-                  value={patientInfo.medicalHistory}
-                  onChange={(e) => setPatientInfo({...patientInfo, medicalHistory: e.target.value})}
+                  value={patientInfoLocal.medicalHistory}
+                  onChange={(e) => setPatientInfoLocal({...patientInfoLocal, medicalHistory: e.target.value})}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6C0B14] focus:border-transparent"
                   rows="4"
                   placeholder="Any allergies, chronic conditions, or important medical history"
@@ -575,8 +582,8 @@ export default function EmergencyContacts() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Hospital</label>
                   <input
                     type="text"
-                    value={patientInfo.preferredHospital}
-                    onChange={(e) => setPatientInfo({...patientInfo, preferredHospital: e.target.value})}
+                    value={patientInfoLocal.preferredHospital}
+                    onChange={(e) => setPatientInfoLocal({...patientInfoLocal, preferredHospital: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6C0B14] focus:border-transparent"
                     placeholder="Your preferred hospital"
                   />
@@ -585,8 +592,8 @@ export default function EmergencyContacts() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Additional Comments</label>
                   <input
                     type="text"
-                    value={patientInfo.additionalComments}
-                    onChange={(e) => setPatientInfo({...patientInfo, additionalComments: e.target.value})}
+                    value={patientInfoLocal.additionalComments}
+                    onChange={(e) => setPatientInfoLocal({...patientInfoLocal, additionalComments: e.target.value})}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6C0B14] focus:border-transparent"
                     placeholder="Any additional comments"
                   />
@@ -679,23 +686,23 @@ export default function EmergencyContacts() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <span className="text-sm font-medium text-gray-600">Name:</span>
-                      <p className="text-gray-800">{patientInfo.name || 'Not provided'}</p>
+                      <p className="text-gray-800">{patientInfoLocal.name || patientInfo.name || 'Not provided'}</p>
                     </div>
                     <div>
                       <span className="text-sm font-medium text-gray-600">Blood Group:</span>
-                      <p className="text-gray-800">{patientInfo.bloodGroup || 'Not provided'}</p>
+                      <p className="text-gray-800">{patientInfoLocal.bloodGroup || patientInfo.bloodGroup || 'Not provided'}</p>
                     </div>
                     <div className="md:col-span-2">
                       <span className="text-sm font-medium text-gray-600">Medical History:</span>
-                      <p className="text-gray-800">{patientInfo.medicalHistory || 'Not provided'}</p>
+                      <p className="text-gray-800">{patientInfoLocal.medicalHistory || patientInfo.medicalHistory || 'Not provided'}</p>
                     </div>
                     <div>
                       <span className="text-sm font-medium text-gray-600">Preferred Hospital:</span>
-                      <p className="text-gray-800">{patientInfo.preferredHospital || 'Not provided'}</p>
+                      <p className="text-gray-800">{patientInfoLocal.preferredHospital || patientInfo.preferredHospital || 'Not provided'}</p>
                     </div>
                     <div>
                       <span className="text-sm font-medium text-gray-600">Additional Comments:</span>
-                      <p className="text-gray-800">{patientInfo.additionalComments || 'Not provided'}</p>
+                      <p className="text-gray-800">{patientInfoLocal.additionalComments || patientInfo.additionalComments || 'Not provided'}</p>
                     </div>
                   </div>
                 </div>
