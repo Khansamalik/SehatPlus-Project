@@ -82,16 +82,20 @@ export default function Login() {
   return (
   <div>
     <div className="h-24"></div>
-    <div className="flex min-h-screen items-center justify-center font-poppins bg-gray-50 py-10">
-      <div className="w-1/2 hidden md:block">
-        <img
-          src={login}
-          alt="Login Illustration"
-          className="ml-auto mr-8 h-[400px] w-auto object-contain"
-        />
+    <div className="flex min-h-screen items-stretch justify-center font-poppins bg-gray-50 py-10">
+      {/* Illustration side (stretches to same height as form) */}
+      <div className="hidden md:flex w-1/2 justify-end pr-8">
+        <div className="w-full max-w-md h-full flex">
+          <img
+            src={login}
+            alt="Login Illustration"
+            className="w-full h-full object-contain bg-white rounded-lg shadow-md p-4"
+          />
+        </div>
       </div>
 
-      <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+      {/* Form card */}
+      <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md h-full flex flex-col">
         <div className="flex justify-center mb-6">
           <img src={logo} className="w-32 h-auto rounded" alt="Logo" />
         </div>
