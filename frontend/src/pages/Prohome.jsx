@@ -944,7 +944,7 @@ export default function HealthAppPage() {
                       {contactsNotified ? 'Contacts Notified' : 'Notify All'}
                     </button>
                     <button 
-                      onClick={() => navigate('/emergency-contacts')}
+                      onClick={() => navigate('/emergency-patient')}
                       className="text-[#8B0000] py-2 px-4 rounded-lg font-medium hover:bg-[#fff0f0] transition inline-flex items-center gap-2"
                     >
                       <FaUserEdit size={18} />
